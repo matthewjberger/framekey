@@ -31,6 +31,7 @@ pub fn draw_menu_bar(app: &mut AnimateApp, ui_context: &egui::Context) {
                             .pick_file()
                             && let Ok(project) = io::load_project(&path)
                         {
+                            app.history.push(app.project.clone());
                             app.project = project;
                             app.current_frame = 0;
                             app.active_layer = 0;
@@ -256,7 +257,9 @@ fn wasm_load_project(app: &AnimateApp) {
                 && let Some(file) = files.get(0)
             {
                 let array_buffer_promise = file.array_buffer();
-                if let Ok(array_buffer) = wasm_bindgen_futures::JsFuture::from(array_buffer_promise).await {
+                if let Ok(array_buffer) =
+                    wasm_bindgen_futures::JsFuture::from(array_buffer_promise).await
+                {
                     let uint8_array = js_sys::Uint8Array::new(&array_buffer);
                     let bytes = uint8_array.to_vec();
                     *pending_clone.borrow_mut() = Some(bytes);
@@ -366,6 +369,7 @@ pub fn handle_global_shortcuts(app: &mut AnimateApp, ui_context: &egui::Context)
                     .pick_file()
                 && let Ok(project) = io::load_project(&path)
             {
+                app.history.push(app.project.clone());
                 app.project = project;
                 app.current_frame = 0;
                 app.active_layer = 0;
