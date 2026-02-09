@@ -146,6 +146,15 @@ pub fn draw_menu_bar(app: &mut AnimateApp, ui_context: &egui::Context) {
                     app.save_path = None;
                     ui.close();
                 }
+                if ui.button("Generate Showcase Animation").clicked() {
+                    app.history.push(app.project.clone());
+                    app.project = crate::test_animation::generate_showcase_animation();
+                    app.current_frame = 0;
+                    app.active_layer = 0;
+                    app.selection.selected_objects.clear();
+                    app.save_path = None;
+                    ui.close();
+                }
             });
             ui.menu_button("Playback", |ui| {
                 let play_label = if app.playback.playing {
